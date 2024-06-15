@@ -1,18 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Grid from '@mui/material/Grid';
-
+import axios from '../axios';
 import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
 
 export const Home = () => {
+
+  useEffect(() => {
+
+  }, [])
+
   return (
     <>
       <Tabs style={{ marginBottom: 15 }} value={0} aria-label="basic tabs example">
-        <Tab label="Новые" />
-        <Tab label="Популярные" />
+        <Tab label="Нові" />
+        <Tab label="Популярні" />
       </Tabs>
       <Grid container spacing={4}>
         <Grid xs={8} item>
@@ -35,19 +40,19 @@ export const Home = () => {
           ))}
         </Grid>
         <Grid xs={4} item>
-          <TagsBlock items={['react', 'typescript', 'заметки']} isLoading={false} />
+          <TagsBlock items={['react', 'typescript', 'замітки']} isLoading={false} />
           <CommentsBlock
             items={[
               {
                 user: {
-                  fullName: 'Вася Пупкин',
+                  fullName: 'Логен',
                   avatarUrl: 'https://mui.com/static/images/avatar/1.jpg',
                 },
-                text: 'Это тестовый комментарий',
+                text: 'тестовий текст',
               },
               {
                 user: {
-                  fullName: 'Иван Иванов',
+                  fullName: 'Муркато',
                   avatarUrl: 'https://mui.com/static/images/avatar/2.jpg',
                 },
                 text: 'When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top',
