@@ -50,14 +50,14 @@ export const FullPost = () => {
               fullName: "Whirun of Bligh",
               avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
             },
-            text: "Это тестовый комментарий 555555",
+            text: "test comment",
           },
           {
             user: {
               fullName: "Bayaz",
               avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
             },
-            text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
+            text: "test comment",
           },
         ]}
         isLoading={false}
