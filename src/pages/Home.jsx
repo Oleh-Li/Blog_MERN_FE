@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Grid from '@mui/material/Grid';
@@ -6,15 +6,38 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
-import { fetchPosts, fetchTags } from '../redux/slices/posts'
+import { fetchPosts, fetchSortedPosts, fetchTags } from '../redux/slices/posts'
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export const Home = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch()
   const userData = useSelector(state => state.auth.data)
   const { posts, tags } = useSelector(state => state.posts)
 
   const isPostsLoading = posts.status === 'loading'
   const isTagsLoading = tags.status === 'loading'
+
+  const [tabIndex, setTabIndex] = useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setTabIndex(newValue);
+    const sort = newValue === 0 ? 'newest' : 'popular';
+    navigate(`/posts?sort=${sort}`);
+  };
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const sort = queryParams.get('sort');
+    if (sort === 'popular') {
+      setTabIndex(1);
+    } else {
+      setTabIndex(0);
+    }
+    dispatch(fetchSortedPosts(sort));
+    dispatch(fetchTags());
+  }, [location.search, dispatch]);
 
   useEffect(() => {
     dispatch(fetchPosts())
@@ -23,7 +46,7 @@ export const Home = () => {
 
   return (
     <>
-      <Tabs style={{ marginBottom: 15 }} value={0} aria-label="basic tabs example">
+      <Tabs style={{ marginBottom: 15 }} value={tabIndex} onChange={handleTabChange} aria-label="basic tabs example">
         <Tab label="Newest" />
         <Tab label="Popular" />
       </Tabs>
