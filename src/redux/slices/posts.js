@@ -6,6 +6,11 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
     return data
 })
 
+export const fetchPostsByTag = createAsyncThunk('posts/fetchPostsBytag', async (tag) => {
+    const { data } = await axios.get(`/tags/${tag}`)
+    return data
+})
+
 export const fetchSortedPosts = createAsyncThunk('posts/fetchSortedPosts', async (sortType) => {
     try {
         const { data } = await axios.get(`/posts?sort=${sortType}`);
@@ -65,6 +70,21 @@ const postsSlice = createSlice({
             state.posts.status = 'loaded';
         },
         [fetchSortedPosts.rejected]: (state) => {
+            state.posts.items = [];
+            state.posts.status = 'error';
+        },
+
+
+        //sorted posts by tag
+        [fetchPostsByTag.pending]: (state) => {
+            state.posts.items = [];
+            state.posts.status = 'loading';
+        },
+        [fetchPostsByTag.fulfilled]: (state, action) => {
+            state.posts.items = action.payload;
+            state.posts.status = 'loaded';
+        },
+        [fetchPostsByTag.rejected]: (state) => {
             state.posts.items = [];
             state.posts.status = 'error';
         },
