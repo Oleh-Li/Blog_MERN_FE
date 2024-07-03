@@ -6,10 +6,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
-import { fetchPosts, fetchSortedPosts, fetchTags } from '../redux/slices/posts'
-import { useNavigate, useLocation } from 'react-router-dom';
+import { fetchPosts, fetchPostsByTag, fetchSortedPosts, fetchSortedPostsByTag, fetchTags } from '../redux/slices/posts'
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 
 export const Home = () => {
+  const { tag } = useParams()
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch()
@@ -22,22 +23,28 @@ export const Home = () => {
   const [tabIndex, setTabIndex] = useState(0);
 
   const handleTabChange = (event, newValue) => {
-    setTabIndex(newValue);
     const sort = newValue === 0 ? 'newest' : 'popular';
-    navigate(`/posts?sort=${sort}`);
+    setTabIndex(newValue);
+    navigate(`?sort=${sort}`);
   };
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const sort = queryParams.get('sort');
+    const sort = queryParams.get('sort') || 'newest';
+
     if (sort === 'popular') {
       setTabIndex(1);
     } else {
       setTabIndex(0);
     }
-    dispatch(fetchSortedPosts(sort));
+
+    if (tag) {
+      dispatch(fetchSortedPostsByTag({ tag, sortType: sort }));
+    } else {
+      dispatch(fetchSortedPosts(sort));
+    }
     dispatch(fetchTags());
-  }, [location.search, dispatch]);
+  }, [tag, location.search, dispatch]);
 
   useEffect(() => {
     dispatch(fetchPosts())

@@ -11,6 +11,16 @@ export const fetchPostsByTag = createAsyncThunk('posts/fetchPostsBytag', async (
     return data
 })
 
+export const fetchSortedPostsByTag = createAsyncThunk('posts/fetchSortedPostsByTag', async ({ tag, sortType }) => {
+    try {
+        const { data } = await axios.get(`/tags/${tag}?sort=${sortType}`);
+        return data;
+    } catch (error) {
+        console.error('Error fetching sorted posts by tag:', error);
+        throw error;
+    }
+});
+
 export const fetchSortedPosts = createAsyncThunk('posts/fetchSortedPosts', async (sortType) => {
     try {
         const { data } = await axios.get(`/posts?sort=${sortType}`);
@@ -75,7 +85,7 @@ const postsSlice = createSlice({
         },
 
 
-        //sorted posts by tag
+        //posts by tag
         [fetchPostsByTag.pending]: (state) => {
             state.posts.items = [];
             state.posts.status = 'loading';
@@ -85,6 +95,20 @@ const postsSlice = createSlice({
             state.posts.status = 'loaded';
         },
         [fetchPostsByTag.rejected]: (state) => {
+            state.posts.items = [];
+            state.posts.status = 'error';
+        },
+
+        //sorted posts by tag
+        [fetchSortedPostsByTag.pending]: (state) => {
+            state.posts.items = [];
+            state.posts.status = 'loading';
+        },
+        [fetchSortedPostsByTag.fulfilled]: (state, action) => {
+            state.posts.items = action.payload;
+            state.posts.status = 'loaded';
+        },
+        [fetchSortedPostsByTag.rejected]: (state) => {
             state.posts.items = [];
             state.posts.status = 'error';
         },
